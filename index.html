@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Emoji Animation + Touch Sound</title>
+  <title>Emoji Animation + Touch + Sound</title>
   <style>
     html, body {
       margin: 0;
@@ -21,22 +21,15 @@
       pointer-events: none;
     }
     @keyframes floatUp {
-      0% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-150px);
-        opacity: 0;
-      }
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-150px); opacity: 0; }
     }
   </style>
 </head>
 <body>
 
-<!-- Sound -->
 <audio id="popSound" preload="auto">
-  <source src="https://www.soundjay.com/button/sounds/button-16.mp3" type="audio/mpeg" />
+  <source src="https://www.soundjay.com/button/sounds/button-16.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -48,7 +41,8 @@
     '🏆','🎖️','🏅','🎗️','🧿','🔮','📸','📷','📹','🎥','🎬','📺','💻','📱','📞','☎️','🕰️','⌛','⏳'
   ];
 
-  const popSound = document.getElementById("popSound");
+  const sound = document.getElementById('popSound');
+  let soundEnabled = false;
 
   function spawnEmoji(x, y) {
     const emoji = document.createElement('div');
@@ -61,29 +55,42 @@
     setTimeout(() => emoji.remove(), 5000);
   }
 
-  function playSound() {
-    popSound.currentTime = 0;
-    popSound.play();
+  function handleInteraction(x, y) {
+    spawnEmoji(x, y);
+    if (soundEnabled) {
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
+    }
   }
 
-  // Automatic float
+  // Enable sound on first touch or click
+  function enableSoundOnce() {
+    if (!soundEnabled) {
+      soundEnabled = true;
+      sound.play().catch(() => {}); // Trigger browser permission
+    }
+  }
+
+  // Auto emoji spawner
   setInterval(() => {
     const x = Math.random() * window.innerWidth;
     const y = window.innerHeight;
     spawnEmoji(x, y);
   }, 300);
 
-  // Touch/click interactions
-  function handleInteraction(x, y) {
-    spawnEmoji(x, y);
-    playSound();
-  }
+  // Click and drag
+  document.addEventListener('mousedown', enableSoundOnce);
+  document.addEventListener('mousemove', e => handleInteraction(e.clientX, e.clientY));
 
-  document.addEventListener('click', e => {
-    handleInteraction(e.clientX, e.clientY);
+  // Touch and swipe
+  document.addEventListener('touchstart', e => {
+    enableSoundOnce();
+    for (let touch of e.touches) {
+      handleInteraction(touch.clientX, touch.clientY);
+    }
   });
 
-  document.addEventListener('touchstart', e => {
+  document.addEventListener('touchmove', e => {
     for (let touch of e.touches) {
       handleInteraction(touch.clientX, touch.clientY);
     }

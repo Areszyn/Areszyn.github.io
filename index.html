@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1" />
-  <title>Emoji Burst</title>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1">
+  <title>Emoji Tap Party</title>
   <style>
     html, body {
       margin: 0;
@@ -13,29 +14,28 @@
       background: #000;
       overflow: hidden;
       touch-action: none;
-      -webkit-overflow-scrolling: auto;
-      font-family: sans-serif;
     }
 
     .emoji {
       position: absolute;
       font-size: 6.5vw;
       animation: floatUp 4s ease-out forwards;
-      user-select: none;
       pointer-events: none;
-      z-index: 999;
+      user-select: none;
     }
 
     @keyframes floatUp {
       0% { transform: translateY(0); opacity: 1; }
       100% { transform: translateY(-30vh); opacity: 0; }
     }
+
+    audio { display: none; }
   </style>
 </head>
 <body>
 
 <audio id="popSound" preload="auto">
-  <source src="https://www.soundjay.com/button/sounds/button-16.mp3" type="audio/mpeg">
+  <source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg">
 </audio>
 
 <script>
@@ -47,15 +47,7 @@
     '🏆','🎖️','🏅','🎗️','🧿','🔮','📸','📷','📹','🎥','🎬','📺','💻','📱','📞','☎️','🕰️','⌛','⏳'
   ];
 
-  const sound = document.getElementById('popSound');
-  let soundEnabled = false;
-
-  function enableSound() {
-    if (!soundEnabled) {
-      sound.play().catch(() => {});
-      soundEnabled = true;
-    }
-  }
+  const popSound = document.getElementById('popSound');
 
   function spawnEmoji(x, y) {
     const emoji = document.createElement('div');
@@ -67,39 +59,36 @@
     setTimeout(() => emoji.remove(), 4000);
   }
 
-  function interact(x, y) {
-    spawnEmoji(x, y);
-    if (soundEnabled) {
-      sound.currentTime = 0;
-      sound.play().catch(() => {});
-    }
+  function playPopSound() {
+    const newSound = popSound.cloneNode(); // clone to allow overlap
+    newSound.play().catch(() => {});
   }
 
-  // Random floating emoji
+  function handleInteraction(x, y) {
+    spawnEmoji(x, y);
+    playPopSound();
+  }
+
   setInterval(() => {
     const x = Math.random() * window.innerWidth;
     const y = window.innerHeight;
     spawnEmoji(x, y);
   }, 500);
 
-  // Touch and swipe
-  document.addEventListener('touchstart', (e) => {
-    enableSound();
-    for (let t of e.touches) interact(t.clientX, t.clientY);
+  document.addEventListener('touchstart', e => {
+    for (let t of e.touches) handleInteraction(t.clientX, t.clientY);
   });
 
-  document.addEventListener('touchmove', (e) => {
-    for (let t of e.touches) interact(t.clientX, t.clientY);
+  document.addEventListener('touchmove', e => {
+    for (let t of e.touches) handleInteraction(t.clientX, t.clientY);
   });
 
-  // Mouse support (desktop)
-  document.addEventListener('mousedown', (e) => {
-    enableSound();
-    interact(e.clientX, e.clientY);
+  document.addEventListener('mousedown', e => {
+    handleInteraction(e.clientX, e.clientY);
   });
 
-  document.addEventListener('mousemove', (e) => {
-    if (e.buttons === 1) interact(e.clientX, e.clientY);
+  document.addEventListener('mousemove', e => {
+    if (e.buttons === 1) handleInteraction(e.clientX, e.clientY);
   });
 </script>
 

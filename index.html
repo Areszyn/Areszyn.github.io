@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1">
   <title>Emoji Tap Party</title>
   <style>
     html, body {
@@ -22,6 +21,7 @@
       animation: floatUp 4s ease-out forwards;
       pointer-events: none;
       user-select: none;
+      transition: all 0.2s ease;
     }
 
     @keyframes floatUp {
@@ -29,13 +29,31 @@
       100% { transform: translateY(-30vh); opacity: 0; }
     }
 
+    /* Confetti Styles */
+    .confetti {
+      position: absolute;
+      background-color: #fff;
+      width: 10px;
+      height: 10px;
+      animation: confettiFall 2s ease-out infinite;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0); }
+      100% { transform: translateY(100vh) rotate(360deg); }
+    }
+
     audio { display: none; }
   </style>
 </head>
 <body>
 
+<!-- Hidden audio tags for sound -->
 <audio id="popSound" preload="auto">
   <source src="https://www.fesliyanstudios.com/play-mp3/387" type="audio/mpeg">
+</audio>
+<audio id="backgroundMusic" loop autoplay preload="auto">
+  <source src="https://www.fesliyanstudios.com/play-mp3/1966" type="audio/mpeg">
 </audio>
 
 <script>
@@ -47,48 +65,122 @@
     '🏆','🎖️','🏅','🎗️','🧿','🔮','📸','📷','📹','🎥','🎬','📺','💻','📱','📞','☎️','🕰️','⌛','⏳'
   ];
 
+  let score = 0;
+  let highScore = localStorage.getItem('highScore') || 0;
+  let gameTime = 30;  // seconds
+  let timer;
+  let soundEnabled = true;
+  let backgroundMusicPlaying = true;
+  
   const popSound = document.getElementById('popSound');
+  const backgroundMusic = document.getElementById('backgroundMusic');
+  const scoreElement = document.createElement('div');
+  scoreElement.style.position = 'absolute';
+  scoreElement.style.color = '#fff';
+  scoreElement.style.fontSize = '3vw';
+  scoreElement.style.top = '10px';
+  scoreElement.style.left = '10px';
+  scoreElement.textContent = `Score: 0 | High Score: ${highScore}`;
+  document.body.appendChild(scoreElement);
 
-  function spawnEmoji(x, y) {
+  // Function to spawn emoji
+  function spawnEmoji(x, y, size = '6.5vw') {
     const emoji = document.createElement('div');
     emoji.className = 'emoji';
     emoji.style.left = `${x}px`;
     emoji.style.top = `${y}px`;
+    emoji.style.fontSize = size;
     emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
     document.body.appendChild(emoji);
     setTimeout(() => emoji.remove(), 4000);
   }
 
-  function playPopSound() {
-    const newSound = popSound.cloneNode(); // clone to allow overlap
-    newSound.play().catch(() => {});
+  // Function to spawn confetti
+  function spawnConfetti(x, y) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = `${x}px`;
+    confetti.style.top = `${y}px`;
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 2000);
   }
 
+  // Function to play sound
+  function playPopSound() {
+    if (soundEnabled) {
+      popSound.play().catch(() => {});
+    }
+  }
+
+  // Function to handle interaction
   function handleInteraction(x, y) {
     spawnEmoji(x, y);
+    spawnConfetti(x, y);
+    score++;
+    scoreElement.textContent = `Score: ${score} | High Score: ${highScore}`;
     playPopSound();
   }
 
-  setInterval(() => {
-    const x = Math.random() * window.innerWidth;
-    const y = window.innerHeight;
-    spawnEmoji(x, y);
-  }, 500);
+  // Timer for game mode
+  function startTimer() {
+    timer = setInterval(() => {
+      gameTime--;
+      if (gameTime <= 0) {
+        clearInterval(timer);
+        alert(`Game Over! Final Score: ${score}`);
+        if (score > highScore) {
+          localStorage.setItem('highScore', score);
+          highScore = score;
+        }
+        score = 0;
+        scoreElement.textContent = `Score: 0 | High Score: ${highScore}`;
+      }
+    }, 1000);
+  }
 
-  document.addEventListener('touchstart', e => {
-    for (let t of e.touches) handleInteraction(t.clientX, t.clientY);
+  // Start Game Timer
+  startTimer();
+
+  // Background Music Toggle
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'm') {
+      backgroundMusicPlaying = !backgroundMusicPlaying;
+      backgroundMusicPlaying ? backgroundMusic.play() : backgroundMusic.pause();
+    }
   });
 
-  document.addEventListener('touchmove', e => {
-    for (let t of e.touches) handleInteraction(t.clientX, t.clientY);
+  // Sound Toggle
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 's') {
+      soundEnabled = !soundEnabled;
+    }
   });
 
-  document.addEventListener('mousedown', e => {
-    handleInteraction(e.clientX, e.clientY);
+  // Shake detection for mobile
+  let shakeDetected = false;
+  window.addEventListener('deviceorientation', function(event) {
+    const beta = event.beta;  // Tilt in the X-axis
+    const gamma = event.gamma; // Tilt in the Y-axis
+    if (Math.abs(beta) > 30 || Math.abs(gamma) > 30) {
+      if (!shakeDetected) {
+        shakeDetected = true;
+        spawnEmoji(Math.random() * window.innerWidth, window.innerHeight);
+      }
+    } else {
+      shakeDetected = false;
+    }
   });
 
-  document.addEventListener('mousemove', e => {
+  // Event listeners for mouse/touch interactions
+  document.addEventListener('mousedown', (e) => handleInteraction(e.clientX, e.clientY));
+  document.addEventListener('mousemove', (e) => {
     if (e.buttons === 1) handleInteraction(e.clientX, e.clientY);
+  });
+  document.addEventListener('touchstart', (e) => {
+    for (let t of e.touches) handleInteraction(t.clientX, t.clientY);
+  });
+  document.addEventListener('touchmove', (e) => {
+    for (let t of e.touches) handleInteraction(t.clientX, t.clientY);
   });
 </script>
 

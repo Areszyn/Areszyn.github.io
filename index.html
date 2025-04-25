@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>reCAPTCHA v3 Frontend</title>
+  <title>Verify Human</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://www.google.com/recaptcha/api.js?render=6Le0liQrAAAAAM6_YzoYcy4iHauR0GWR35e3bH4m"></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6Le0liQrAAAAAFuZq0HrYoW8HfimvwWMmffKxhrI"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -30,6 +30,9 @@
       border-radius: 6px;
       cursor: pointer;
     }
+    #status {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -37,21 +40,18 @@
     <h2>Human Verification</h2>
     <p>Click below to verify you're not a bot</p>
     <button onclick="verifyHuman()">Verify</button>
-    <p id="status" style="margin-top: 20px;"></p>
+    <p id="status"></p>
   </div>
 
   <script>
     function verifyHuman() {
       grecaptcha.ready(function() {
-        grecaptcha.execute('6Le0liQrAAAAAM6_YzoYcy4iHauR0GWR35e3bH4m', {action: 'submit'}).then(function(token) {
-          // Normally you'd send the token to your backend for verification
-          console.log("reCAPTCHA token:", token);
-          
-          // Once the token is generated, redirect to the emoji page
-          document.getElementById('status').innerText = "Verification complete (token generated). Redirecting...";
+        grecaptcha.execute('6Le0liQrAAAAAFuZq0HrYoW8HfimvwWMmffKxhrI', {action: 'submit'}).then(function(token) {
+          // Token generated – simulate success and redirect
+          document.getElementById('status').innerText = "Verified! Redirecting...";
           setTimeout(function() {
-            window.location.href = 'emoji.html'; // Redirects to the emoji page
-          }, 2000); // Waits 2 seconds before redirecting
+            window.location.href = 'emoji.html';
+          }, 1500);
         });
       });
     }

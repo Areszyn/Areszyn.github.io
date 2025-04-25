@@ -6,98 +6,75 @@
   <title>Verify</title>
   <script src="https://www.google.com/recaptcha/api.js?render=6Le0liQrAAAAAFuZq0HrYoW8HfimvwWMmffKxhrI"></script>
   <style>
+    /* Striped Background */
     body {
-      background: #f0f0f0;
-      font-family: 'Arial', sans-serif;
-      height: 100vh;
       margin: 0;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      --color: #faa7d8;
+      background: linear-gradient(45deg, var(--color) 25%, transparent 25%) -50px 0,
+        linear-gradient(-45deg, var(--color) 25%, transparent 25%) -50px 0,
+        linear-gradient(45deg, transparent 75%, var(--color) 75%) -50px 0,
+        linear-gradient(-45deg, transparent 75%, var(--color) 75%) -50px 0;
+      background-color: #e5e5f7;
+      background-size: 10px 40px;
+      font-family: Arial, sans-serif;
     }
 
-    .checkbox-wrapper:hover .check {
-      stroke-dashoffset: 0;
-    }
-
-    .checkbox-wrapper {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 60px;
+    /* Launch Button Styling */
+    button {
+      display: flex;
+      align-items: center;
+      font-family: inherit;
       cursor: pointer;
+      font-weight: 500;
+      font-size: 17px;
+      padding: 0.8em 1.3em 0.8em 0.9em;
+      color: white;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      border: none;
+      letter-spacing: 0.05em;
+      border-radius: 16px;
     }
 
-    .checkbox-wrapper .background {
-      fill: rgb(75, 50, 121);
-      transition: ease all 0.6s;
+    button svg {
+      margin-right: 3px;
+      transform: rotate(30deg);
+      transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
     }
 
-    .checkbox-wrapper .stroke {
-      fill: none;
-      stroke: #fff;
-      stroke-miterlimit: 10;
-      stroke-width: 2px;
-      stroke-dashoffset: 100;
-      stroke-dasharray: 100;
-      transition: ease all 0.6s;
+    button span {
+      transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
     }
 
-    .checkbox-wrapper .check {
-      fill: none;
-      stroke: #fff;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-width: 2px;
-      stroke-dashoffset: 22;
-      stroke-dasharray: 22;
-      transition: ease all 0.6s;
+    button:hover svg {
+      transform: translateX(5px) rotate(90deg);
     }
 
-    .checkbox-wrapper input[type=checkbox] {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      margin: 0;
-      opacity: 0;
-      appearance: none;
-      -webkit-appearance: none;
-    }
-
-    .checkbox-wrapper input[type=checkbox]:checked + svg .background {
-      fill: #421c64;
-    }
-
-    .checkbox-wrapper input[type=checkbox]:checked + svg .stroke {
-      stroke-dashoffset: 0;
-    }
-
-    .checkbox-wrapper input[type=checkbox]:checked + svg .check {
-      stroke-dashoffset: 0;
+    button:hover span {
+      transform: translateX(7px);
     }
   </style>
 </head>
 <body>
 
-  <!-- Animated Checkbox -->
-  <div class="checkbox-wrapper">
-    <input type="checkbox" onclick="verifyAndRedirect()" />
-    <svg viewBox="0 0 35.6 35.6">
-      <circle class="background" cx="17.8" cy="17.8" r="17.8"></circle>
-      <circle class="stroke" cx="17.8" cy="17.8" r="14.37"></circle>
-      <polyline class="check" points="11.78 18.12 15.55 22.23 25.17 12.87"></polyline>
+  <!-- Animated Button -->
+  <button onclick="verifyAndRedirect()">
+    <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M5 13c0-5.088 2.903-9.436 7-11.182C16.097 3.564 19 7.912 19 13c0 .823-.076 1.626-.22 2.403l1.94 1.832a.5.5 0 0 1 .095.603l-2.495 4.575a.5.5 0 0 1-.793.114l-2.234-2.234a1 1 0 0 0-.707-.293H9.414a1 1 0 0 0-.707.293l-2.234 2.234a.5.5 0 0 1-.793-.114l-2.495-4.575a.5.5 0 0 1 .095-.603l1.94-1.832C5.077 14.626 5 13.823 5 13zm1.476 6.696l.817-.817A3 3 0 0 1 9.414 18h5.172a3 3 0 0 1 2.121.879l.817.817.982-1.8-1.1-1.04a2 2 0 0 1-.593-1.82c.124-.664.187-1.345.187-2.036 0-3.87-1.995-7.3-5-8.96C8.995 5.7 7 9.13 7 13c0 .691.063 1.372.187 2.037a2 2 0 0 1-.593 1.82l-1.1 1.039.982 1.8zM12 13a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" fill="currentColor"></path>
     </svg>
-  </div>
+    <span>Launch</span>
+  </button>
 
   <script>
     function verifyAndRedirect() {
       grecaptcha.ready(function () {
         grecaptcha.execute('6Le0liQrAAAAAFuZq0HrYoW8HfimvwWMmffKxhrI', { action: 'verify' })
           .then(function (token) {
-            // Normally you would send token to your server to validate
-            // Since frontend-only: redirect directly
+            // Here you'd normally send token to backend for verification
             window.location.href = "emoji.html";
           });
       });

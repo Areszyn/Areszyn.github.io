@@ -55,11 +55,22 @@
       font-size: 20px;
       z-index: 10;
     }
+
+    /* Make YouTube video fill the screen */
+    #bgVideo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* Keep it in the background */
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
-<!-- Add Brazilian Funk music -->
-<audio id="funkMusic" src="https://www.fesliyanstudios.com/play-mp3/387" preload="auto" loop autoplay></audio>
+<!-- Embed YouTube video (set to autoplay and muted for background music) -->
+<iframe id="bgVideo" src="https://www.youtube.com/embed/NWnFhu0JbU0?autoplay=1&mute=1&loop=1&playlist=NWnFhu0JbU0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 <div id="emojiCount">Emojis: 0</div>
 

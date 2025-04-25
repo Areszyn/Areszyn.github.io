@@ -55,41 +55,6 @@
       font-size: 20px;
       z-index: 10;
     }
-
-    #themeToggle {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.5);
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    .light-mode {
-      background: #fff !important;
-      animation: none !important;
-    }
-
-    .light-mode #emojiCount {
-      color: black;
-    }
-
-    .light-mode #themeToggle {
-      background: rgba(255,255,255,0.6);
-      color: black;
-    }
-
-    .light-mode body {
-      background: linear-gradient(-45deg, 
-        #ff0000, #ff9900, #ffff00, #33ff00, #00ffff, #3300ff, #ff00ff, #ff0000);
-      background-size: 400% 400%;
-      animation: rgbFlow 2s linear infinite;
-    }
   </style>
 </head>
 <body>
@@ -97,17 +62,6 @@
 <audio id="funkMusic" src="https://www.fesliyanstudios.com/play-mp3/387" preload="auto" loop autoplay></audio>
 
 <div id="emojiCount">Emojis: 0</div>
-<button id="themeToggle">Toggle Theme</button>
-
-<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-<script>
-  kofiWidgetOverlay.draw('areszyn', {
-    'type': 'floating-chat',
-    'floating-chat.donateButton.text': 'Donate',
-    'floating-chat.donateButton.background-color': '#323842',
-    'floating-chat.donateButton.text-color': '#fff'
-  });
-</script>
 
 <script>
 const emojis = [
@@ -183,10 +137,6 @@ document.addEventListener("mousedown", (e) => handleTouch(e, true));
 document.addEventListener("touchmove", (e) => handleTouch(e));
 document.addEventListener("mousemove", (e) => {
   if (e.buttons) handleTouch(e);
-});
-
-document.getElementById("themeToggle").addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
 });
 </script>
 </body>

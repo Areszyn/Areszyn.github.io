@@ -2,21 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Live IPL 2025 Scores</title>
+  <title>Live IPL Score</title>
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-    iframe {
-      width: 100vw;
+      background: #0f0c29;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       height: 100vh;
+      flex-direction: column;
+      font-family: sans-serif;
+    }
+    button {
+      font-size: 18px;
+      padding: 12px 24px;
       border: none;
+      border-radius: 10px;
+      background: linear-gradient(to right, #ad5389, #3c1053);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    small {
+      margin-top: 20px;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <!-- Replace this with any trusted source you like -->
-  <iframe src="https://www.google.com/search?q=ipl+2025+live+score"></iframe>
+  <h1>Live IPL 2025 Score</h1>
+  <button onclick="window.open('https://www.espncricinfo.com/series/ipl-2025-1449924/', '_blank')">
+    View Live Score on ESPNcricinfo
+  </button>
+  <button style="margin-top: 20px;" onclick="window.open('https://www.cricbuzz.com/cricket-series/7607/indian-premier-league-2025', '_blank')">
+    View on Cricbuzz
+  </button>
+  <small>Clicking the buttons will open the official live scores in a new tab.</small>
 </body>
 </html>

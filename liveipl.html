@@ -2,77 +2,108 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Live IPL Scoreboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPL 2025 Live Score - ESPN & CricketData</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f1f1f1;
-      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
     }
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .api-score {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-      padding: 20px;
-      margin-bottom: 20px;
+    .score-container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #e5e5e5;
     }
 
     iframe {
-      width: 100%;
-      height: 600px;
+      width: 80%;
+      height: 80vh;
       border: none;
-      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     }
 
-    h2 {
-      margin-top: 0;
-      color: #d32f2f;
+    .cricket-score {
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+    }
+
+    .cricket-score h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .cricket-score p {
+      margin: 0;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="api-score" id="score-section">
-      <h2>Live IPL Score</h2>
-      <p>Loading match info...</p>
-    </div>
 
-    <!-- ESPN Scoreboard (visual + commentary) -->
-    <iframe src="https://www.espncricinfo.com/series/ipl-2024-1388374" title="Live IPL ESPN Info"></iframe>
+  <!-- ESPN Cricinfo Live Scoreboard -->
+  <div class="score-container">
+    <iframe 
+      src="https://www.espncricinfo.com/series/ipl-2025-1449924/match-schedule-fixtures-and-results" 
+      title="Live IPL ESPN Info">
+    </iframe>
+  </div>
+
+  <!-- CricketData.org Live Score -->
+  <div class="cricket-score">
+    <h2>Live IPL Score</h2>
+    <p id="match-status">Loading...</p>
+    <p id="team1">Team 1: --</p>
+    <p id="team2">Team 2: --</p>
+    <p id="score">Score: --</p>
   </div>
 
   <script>
-    // Sample CricAPI frontend fetch
-    fetch("https://api.cricapi.com/v1/currentMatches?apikey=94329bbf-0933-491e-9616-07b69809c72f&offset=0")
-      .then(res => res.json())
-      .then(data => {
-        const match = data.data.find(m => m.name.includes("IPL"));
-        if (!match) {
-          document.getElementById("score-section").innerHTML = "<p>No IPL match found right now.</p>";
-          return;
-        }
+    // Fetch Live Score from CricketData API
+    const apiKey = 'YOUR_CRICKETDATA_API_KEY'; // Replace with your API key from CricketData.org
+    const matchId = 'IPL-2025-MATCH-ID'; // Replace with actual match ID if required
 
-        const html = `
-          <h2>${match.name}</h2>
-          <p><strong>Status:</strong> ${match.status}</p>
-          <p><strong>${match.teams[0]}</strong>: ${match.score[0]?.r}/${match.score[0]?.w} in ${match.score[0]?.o} overs</p>
-          <p><strong>${match.teams[1]}</strong>: ${match.score[1]?.r}/${match.score[1]?.w} in ${match.score[1]?.o} overs</p>
-        `;
-        document.getElementById("score-section").innerHTML = html;
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById("score-section").innerHTML = "<p>Error loading score. Try again later.</p>";
-      });
+    async function getLiveScore() {
+      try {
+        const response = await fetch(`https://cricketdata.org/api/matches/${matchId}?apikey=${apiKey}`);
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          const match = data.data.match;
+          const team1 = match.teams[0].name;
+          const team2 = match.teams[1].name;
+          const score = match.score;
+          const matchStatus = match.status;
+
+          document.getElementById('team1').textContent = `Team 1: ${team1}`;
+          document.getElementById('team2').textContent = `Team 2: ${team2}`;
+          document.getElementById('score').textContent = `Score: ${score}`;
+          document.getElementById('match-status').textContent = `Status: ${matchStatus}`;
+        } else {
+          document.getElementById('match-status').textContent = 'Error fetching live score.';
+        }
+      } catch (error) {
+        console.error('Error fetching live score:', error);
+        document.getElementById('match-status').textContent = 'Error fetching live score.';
+      }
+    }
+
+    // Call the function to fetch the live score
+    getLiveScore();
   </script>
+
 </body>
-</html
+</html>

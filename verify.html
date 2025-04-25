@@ -1,1 +1,121 @@
-.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Captcha Verification</title>
+  <style>
+    /* Basic Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .captcha-container {
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .theme-toggle {
+      margin-top: 20px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: all 0.3s ease;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background: white;
+      transition: all 0.3s ease;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #66bb6a;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .captcha-text {
+      margin-top: 15px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="captcha-container">
+    <canvas id="captchaCanvas"></canvas>
+    <div class="theme-toggle">
+      <label class="switch">
+        <input type="checkbox" id="theme-switch" />
+        <span class="slider"></span>
+      </label>
+      <span class="captcha-text">I am not an Alien</span>
+    </div>
+  </div>
+
+  <script>
+    const captchaCanvas = document.getElementById('captchaCanvas');
+    const ctx = captchaCanvas.getContext('2d');
+    captchaCanvas.width = 300;
+    captchaCanvas.height = 150;
+    let currentTheme = 'Alien';
+
+    function drawCaptcha() {
+      ctx.clearRect(0, 0, captchaCanvas.width, captchaCanvas.height);
+
+      ctx.fillStyle = currentTheme === 'Alien' ? '#ff6b6b' : '#66bb6a';
+      ctx.fillRect(0, 0, captchaCanvas.width, captchaCanvas.height);
+
+      ctx.fillStyle = 'white';
+      ctx.font = '24px Arial';
+      ctx.fillText('Please verify', 100, 70);
+    }
+
+    document.getElementById('theme-switch').addEventListener('change', (e) => {
+      currentTheme = e.target.checked ? 'Human' : 'Alien';
+      drawCaptcha();
+    });
+
+    drawCaptcha();
+  </script>
+</body>
+</html>

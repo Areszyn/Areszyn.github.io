@@ -14,6 +14,7 @@
       position: relative;
       background: url('https://i.imgur.com/nf8ghcV.jpg') no-repeat center center fixed;
       background-size: cover;
+      transition: background 0.5s;
     }
 
     .emoji {
@@ -43,8 +44,37 @@
       top: 10px;
       left: 10px;
       color: white;
-      font-size: 24px;
+      font-size: 20px;
       z-index: 10;
+    }
+
+    #themeToggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .light-mode {
+      background: #fff !important;
+      background-size: cover;
+      color: #000;
+    }
+
+    .light-mode #emojiCount {
+      color: black;
+    }
+
+    .light-mode #themeToggle {
+      background: rgba(255,255,255,0.6);
+      color: black;
     }
   </style>
 </head>
@@ -56,6 +86,17 @@
 <audio id="pop5" src="https://www.fesliyanstudios.com/play-mp3/238" preload="auto"></audio>
 
 <div id="emojiCount">Emojis: 0</div>
+<button id="themeToggle">Toggle Theme</button>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('areszyn', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Donate',
+    'floating-chat.donateButton.background-color': '#323842',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
 
 <script>
 const emojis = [
@@ -66,8 +107,8 @@ const emojis = [
   '🏆','🎖️','🏅','🎗️','🧿','🔮','📸','📷','📹','🎥','🎬','📺','💻','📱','📞','☎️','🕰️','⌛','⏳','🔔',
   '🎯','🧭','🪄','🧱','🪓','🛠️','🧰','🪛','🧲','🔧','🪙','🔫','🧨','🧪','🧬','🧫','🧯','🪤','🪚','🪠',
   '🚿','🛁','🧽','🪥','🧴','🛒','🧺','🧻','🪑','🛏️','🧸','🪆','🖼️','🪞','🪟','🧭','🪝','🪜','🛎️','🔑',
-  '🪤','💉','💊','🩹','🩺','🩻','🧪','🧫','🧬','🧯','🛡️','⚔️','🗡️','🪓','🔫','🚬','⚰️','⚱️','🗿','🧱',
-  '🛢️','🪣','🪤','🪚','🪛','🧲','🪜','🪝','🧽','🧼','🧻','🪥','🧴','🧺','🪑','🛏️','🛋️','🚽','🪠','🛁'
+  '💉','💊','🩹','🩺','🩻','🧯','🛡️','⚔️','🗡️','🪓','🚬','⚰️','⚱️','🗿','🛢️','🪣','🧽','🧼','🧻','🪥',
+  '🧴','🧺','🪑','🛏️','🛋️','🚽','🪠','🛁','🎃','👻','💀','👽','🤖','👾','🧠','🦾','🦿','🦷','🫀','🫁'
 ];
 
 const soundEffects = ['pop1', 'pop2', 'pop3', 'pop4', 'pop5'];
@@ -121,18 +162,23 @@ function playRandomSound() {
   sound.play().catch(() => {});
 }
 
-document.addEventListener("touchstart", (e) => handleTouchOrClick(e));
-document.addEventListener("mousedown", (e) => handleTouchOrClick(e));
-document.addEventListener("mousemove", (e) => {
-  if (e.buttons) handleTouchOrClick(e);
-});
-
 function handleTouchOrClick(e) {
   const touches = e.touches || [e];
   for (let t of touches) {
     spawnEmoji(t.clientX, t.clientY);
   }
 }
+
+document.addEventListener("touchstart", handleTouchOrClick);
+document.addEventListener("mousedown", handleTouchOrClick);
+document.addEventListener("mousemove", (e) => {
+  if (e.buttons) handleTouchOrClick(e);
+});
+
+// Theme toggle
+document.getElementById("themeToggle").addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+});
 </script>
 </body>
 </html>

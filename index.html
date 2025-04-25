@@ -15,7 +15,7 @@
       background: linear-gradient(-45deg,
         #ff0000, #ff9900, #ffff00, #33ff00, #00ffff, #3300ff, #ff00ff, #ff0000);
       background-size: 400% 400%;
-      animation: rgbFlow 5s linear infinite;
+      animation: rgbFlow 2s linear infinite;
       transition: background 0.5s;
     }
 
@@ -83,14 +83,18 @@
       background: rgba(255,255,255,0.6);
       color: black;
     }
+
+    .light-mode body {
+      background: linear-gradient(-45deg, 
+        #ff0000, #ff9900, #ffff00, #33ff00, #00ffff, #3300ff, #ff00ff, #ff0000);
+      background-size: 400% 400%;
+      animation: rgbFlow 2s linear infinite;
+    }
   </style>
 </head>
 <body>
-<audio id="pop1" src="https://www.fesliyanstudios.com/play-mp3/387" preload="auto"></audio>
-<audio id="pop2" src="https://www.fesliyanstudios.com/play-mp3/183" preload="auto"></audio>
-<audio id="pop3" src="https://www.fesliyanstudios.com/play-mp3/130" preload="auto"></audio>
-<audio id="pop4" src="https://www.fesliyanstudios.com/play-mp3/188" preload="auto"></audio>
-<audio id="pop5" src="https://www.fesliyanstudios.com/play-mp3/238" preload="auto"></audio>
+<!-- Add Brazilian Funk music -->
+<audio id="funkMusic" src="https://www.fesliyanstudios.com/play-mp3/387" preload="auto" loop autoplay></audio>
 
 <div id="emojiCount">Emojis: 0</div>
 <button id="themeToggle">Toggle Theme</button>
@@ -117,7 +121,7 @@ const emojis = [
   '🕊️','🦜','🦢','🦩','🦚','🦤','🪶','🦎','🦂','🪰','🪱','🪳','🪲','🦠','💀','👻','👽','🤖','🎃'
 ];
 
-const soundEffects = ['pop1', 'pop2', 'pop3', 'pop4', 'pop5'];
+const soundEffects = ['pop1'];
 const emojiCountDisplay = document.getElementById("emojiCount");
 let emojiCount = 0;
 
@@ -162,8 +166,7 @@ function getRandomColor() {
 }
 
 function playRandomSound() {
-  const randomIndex = Math.floor(Math.random() * soundEffects.length);
-  const sound = document.getElementById(soundEffects[randomIndex]);
+  const sound = document.getElementById(soundEffects[0]);
   sound.currentTime = 0;
   sound.play().catch(() => {});
 }

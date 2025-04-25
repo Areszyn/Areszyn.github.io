@@ -2,59 +2,107 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Verify Human</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verify</title>
   <script src="https://www.google.com/recaptcha/api.js?render=6Le0liQrAAAAAFuZq0HrYoW8HfimvwWMmffKxhrI"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: #f0f0f0;
+      font-family: 'Arial', sans-serif;
       height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    .box {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
+
+    .checkbox-wrapper:hover .check {
+      stroke-dashoffset: 0;
     }
-    button {
-      padding: 12px 20px;
-      border: none;
-      background-color: #4285f4;
-      color: white;
-      font-size: 16px;
-      border-radius: 6px;
+
+    .checkbox-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 60px;
       cursor: pointer;
     }
-    #status {
-      margin-top: 20px;
+
+    .checkbox-wrapper .background {
+      fill: rgb(75, 50, 121);
+      transition: ease all 0.6s;
+    }
+
+    .checkbox-wrapper .stroke {
+      fill: none;
+      stroke: #fff;
+      stroke-miterlimit: 10;
+      stroke-width: 2px;
+      stroke-dashoffset: 100;
+      stroke-dasharray: 100;
+      transition: ease all 0.6s;
+    }
+
+    .checkbox-wrapper .check {
+      fill: none;
+      stroke: #fff;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2px;
+      stroke-dashoffset: 22;
+      stroke-dasharray: 22;
+      transition: ease all 0.6s;
+    }
+
+    .checkbox-wrapper input[type=checkbox] {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      margin: 0;
+      opacity: 0;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .checkbox-wrapper input[type=checkbox]:checked + svg .background {
+      fill: #421c64;
+    }
+
+    .checkbox-wrapper input[type=checkbox]:checked + svg .stroke {
+      stroke-dashoffset: 0;
+    }
+
+    .checkbox-wrapper input[type=checkbox]:checked + svg .check {
+      stroke-dashoffset: 0;
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>Human Verification</h2>
-    <p>Click below to verify you're not a bot</p>
-    <button onclick="verifyHuman()">Verify</button>
-    <p id="status"></p>
+
+  <!-- Animated Checkbox -->
+  <div class="checkbox-wrapper">
+    <input type="checkbox" onclick="verifyAndRedirect()" />
+    <svg viewBox="0 0 35.6 35.6">
+      <circle class="background" cx="17.8" cy="17.8" r="17.8"></circle>
+      <circle class="stroke" cx="17.8" cy="17.8" r="14.37"></circle>
+      <polyline class="check" points="11.78 18.12 15.55 22.23 25.17 12.87"></polyline>
+    </svg>
   </div>
 
   <script>
-    function verifyHuman() {
-      grecaptcha.ready(function() {
-        grecaptcha.execute('6Le0liQrAAAAAFuZq0HrYoW8HfimvwWMmffKxhrI', {action: 'submit'}).then(function(token) {
-          // Token generated – simulate success and redirect
-          document.getElementById('status').innerText = "Verified! Redirecting...";
-          setTimeout(function() {
-            window.location.href = 'emoji.html';
-          }, 1500);
-        });
+    function verifyAndRedirect() {
+      grecaptcha.ready(function () {
+        grecaptcha.execute('6Le0liQrAAAAAFuZq0HrYoW8HfimvwWMmffKxhrI', { action: 'verify' })
+          .then(function (token) {
+            // Normally you would send token to your server to validate
+            // Since frontend-only: redirect directly
+            window.location.href = "emoji.html";
+          });
       });
     }
   </script>
+
 </body>
 </html>

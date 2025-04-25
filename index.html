@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Captcha Verification</title>
   <style>
-    /* Basic Styles */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -36,7 +35,7 @@
       height: 34px;
     }
 
-    .switch input { 
+    .switch input {
       opacity: 0;
       width: 0;
       height: 0;
@@ -101,18 +100,22 @@
 
     function drawCaptcha() {
       ctx.clearRect(0, 0, captchaCanvas.width, captchaCanvas.height);
-
       ctx.fillStyle = currentTheme === 'Alien' ? '#ff6b6b' : '#66bb6a';
       ctx.fillRect(0, 0, captchaCanvas.width, captchaCanvas.height);
-
       ctx.fillStyle = 'white';
       ctx.font = '24px Arial';
-      ctx.fillText('Please verify', 100, 70);
+      ctx.fillText('Please verify', 90, 80);
     }
 
     document.getElementById('theme-switch').addEventListener('change', (e) => {
       currentTheme = e.target.checked ? 'Human' : 'Alien';
       drawCaptcha();
+
+      if (currentTheme === 'Human') {
+        setTimeout(() => {
+          window.location.href = 'emoji.html'; // Redirect after verified
+        }, 800);
+      }
     });
 
     drawCaptcha();

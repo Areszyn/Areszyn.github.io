@@ -1,136 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LIFE</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boys Majority Videos</title>
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    background: black;
+    overflow: hidden;
+    height: 100%;
+}
 
-  <!-- Favicon (Logo for browser tab) -->
-  <link rel="icon" href="https://envs.sh/YTD.jpg" type="image/jpg" />
+.video-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+}
 
-  <style>
-    body {
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      margin: 0;
-      background: #f0f0f0;
-      padding-top: 30px;
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 1s ease;
+}
+
+.mute-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.quote-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    font-size: 2rem;
+    z-index: 9;
+}
+
+/* Fade effects */
+.fade-out {
+    opacity: 0;
+}
+.fade-in {
+    opacity: 1;
+}
+
+/* Mobile improvements */
+@media (max-width: 600px) {
+    .mute-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
     }
-
-    header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
+    .quote-container {
+        font-size: 1.5rem;
+        padding: 15px;
     }
-
-    header img {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-    }
-
-    header h1 {
-      font-size: 24px;
-      margin: 0;
-      color: #333;
-    }
-
-    video {
-      width: 90%;
-      max-width: 500px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-
-    button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 0 10px;
-      color: white;
-      text-shadow: 2px 2px rgb(116, 116, 116);
-      text-transform: uppercase;
-      cursor: pointer;
-      border: solid 2px black;
-      letter-spacing: 1px;
-      font-weight: 600;
-      font-size: 17px;
-      background-color: hsl(49deg 98% 60%);
-      border-radius: 50px;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.5s ease;
-    }
-
-    button:active {
-      transform: scale(0.9);
-      transition: all 100ms ease;
-    }
-
-    button svg {
-      transition: all 0.5s ease;
-      z-index: 2;
-    }
-
-    .play {
-      transition: all 0.5s ease;
-      transition-delay: 300ms;
-    }
-
-    button:hover svg {
-      transform: scale(3) translate(50%);
-    }
-
-    .now {
-      position: absolute;
-      left: 0;
-      transform: translateX(-100%);
-      transition: all 0.5s ease;
-      z-index: 2;
-    }
-
-    button:hover .now {
-      transform: translateX(10px);
-      transition-delay: 300ms;
-    }
-
-    button:hover .play {
-      transform: translateX(200%);
-      transition-delay: 300ms;
-    }
-  </style>
+}
+</style>
 </head>
+
 <body>
 
-  <header>
-    <img src="https://envs.sh/YTD.jpg" alt="LIFE Logo" />
-    <h1>LIFE</h1>
-  </header>
+<div class="video-container">
+    <video id="mainVideo" autoplay muted playsinline></video>
+    <audio id="bgMusic" loop preload="auto" src="https://cdn.pixabay.com/audio/2023/03/16/audio_d1d39384e7.mp3"></audio>
+</div>
 
-  <video id="myVideo" src="https://envs.sh/RHm.mp4" preload="auto" playsinline></video>
+<div id="muteBtn" class="mute-btn">🔇</div>
 
-  <button id="playBtn">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36px" height="36px">
-      <rect width="36" height="36" x="0" y="0" fill="#fdd835"></rect>
-      <path fill="#e53935" d="M38.67,42H11.52C11.27,40.62..."></path>
-    </svg>
-    <span class="now">now!</span>
-    <span class="play">play</span>
-  </button>
+<div id="quoteContainer" class="quote-container">
+    <div id="quoteText"></div>
+</div>
 
-  <script>
-    const video = document.getElementById('myVideo');
-    const playBtn = document.getElementById('playBtn');
+<script>
+const video = document.getElementById('mainVideo');
+const muteBtn = document.getElementById('muteBtn');
+const quoteContainer = document.getElementById('quoteContainer');
+const quoteText = document.getElementById('quoteText');
+const bgMusic = document.getElementById('bgMusic');
 
-    playBtn.addEventListener('click', () => {
-      video.muted = false;
-      video.play();
+// Video playlist
+const videos = [
+    "https://envs.sh/RgP.mp4",
+    "https://envs.sh/RHm.mp4",
+    "https://envs.sh/Rgn.mp4",
+    "https://envs.sh/RgT.mp4",
+    "https://envs.sh/Rgp.mp4"
+];
+
+// Quotes about "boys majority"
+const quotes = [
+    "The majority of boys think with their hearts before their heads, but wisdom comes from balancing both.",
+    "In a room full of boys, the loudest voice isn't always the wisest - true leadership comes from thoughtful consideration.",
+    "The majority opinion among boys often follows the crowd, but real strength comes from standing by your convictions.",
+    "When most boys chase popularity, the rare ones who chase purpose become the men who change the world.",
+    "The boys' majority votes for fun today, while the minority plans for success tomorrow - choose your camp wisely.",
+    "Nine boys out of ten will follow the path; it's the tenth who creates new trails for others to follow.",
+    "The majority of boys measure strength in muscles; the enlightened measure it in character and resilience.",
+    "Where most boys see competition, the wise see opportunities for collaboration and growth.",
+    "The boys' majority fears being different, while the exceptional embrace what makes them unique.",
+    "When the majority of boys seek approval, the extraordinary seek authenticity and self-respect."
+];
+
+let currentVideoIndex = 0;
+let loopCount = 0;
+const maxLoops = 10;
+let isShowingQuote = false;
+
+// Start muted
+video.muted = true;
+
+// Load the first video
+loadVideo(currentVideoIndex);
+
+// Mute button functionality
+function toggleMute() {
+    video.muted = !video.muted;
+    muteBtn.textContent = video.muted ? '🔇' : '🔊';
+    if (!video.muted) {
+        setTimeout(() => {
+            muteBtn.style.opacity = '0';
+            setTimeout(() => muteBtn.style.display = 'none', 500);
+        }, 2000);
+    } else {
+        muteBtn.style.display = 'flex';
+        muteBtn.style.opacity = '1';
+    }
+}
+muteBtn.addEventListener('click', toggleMute);
+
+video.addEventListener('click', () => {
+    if (video.muted) {
+        muteBtn.style.display = 'flex';
+        muteBtn.style.opacity = '1';
+    }
+});
+
+// Load video with fade effect
+function loadVideo(index) {
+    video.classList.add('fade-out');
+    setTimeout(() => {
+        video.src = videos[index];
+        video.load();
+        video.play()
+            .then(() => {
+                isShowingQuote = false;
+                video.classList.remove('fade-out');
+                video.classList.add('fade-in');
+            })
+            .catch(err => console.error("Play error:", err));
+    }, 1000);
+}
+
+// Show a random quote
+function showQuote() {
+    if (loopCount >= maxLoops) return;
+
+    isShowingQuote = true;
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    quoteText.textContent = randomQuote;
+    quoteContainer.style.display = 'flex';
+    bgMusic.volume = 0.5;
+    bgMusic.play().catch(() => {});
+
+    setTimeout(() => {
+        quoteContainer.style.display = 'none';
+        bgMusic.pause();
+        currentVideoIndex = 0;
+        loopCount++;
+        loadVideo(currentVideoIndex);
+    }, 10000);
+}
+
+// When video ends
+video.addEventListener('ended', () => {
+    if (!isShowingQuote) {
+        currentVideoIndex++;
+        if (currentVideoIndex < videos.length) {
+            loadVideo(currentVideoIndex);
+        } else {
+            showQuote();
+        }
+    }
+});
+
+// Try autoplay
+video.play()
+    .catch(() => {
+        document.body.innerHTML = `
+            <div style="
+                position:fixed;
+                top:0;
+                left:0;
+                width:100%;
+                height:100%;
+                background:black;
+                color:white;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                font-size:24px;
+                cursor:pointer;
+            ">
+                Click to Start
+            </div>`;
+        document.body.addEventListener('click', () => {
+            video.muted = false;
+            video.play();
+            location.reload();
+        }, { once: true });
     });
-  </script>
+</script>
+
 </body>
 </html>
